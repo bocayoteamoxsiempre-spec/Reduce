@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>EcoZona</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --green:#34C759;--green-dark:#248A3D;--green-bg:rgba(52,199,89,0.12);
+  --blue:#007AFF;--blue-bg:rgba(0,122,255,0.12);
+  --orange:#FF9500;--orange-bg:rgba(255,149,0,0.12);
+  --red:#FF3B30;--red-bg:rgba(255,59,48,0.12);
+  --bg:#F2F2F7;--card:#FFFFFF;--card2:#F9F9FB;
+  --label1:#000000;--label2:#3C3C43;--label3:#3C3C4399;--label4:#3C3C432E;
+  --sep:rgba(60,60,67,0.12);--sep-strong:rgba(60,60,67,0.29);
+  --fill1:rgba(120,120,128,0.2);--fill2:rgba(120,120,128,0.16);
+  --r-card:16px;--r-lg:20px;--r-xl:28px;
+  --tab-h:83px;
+}
+html{background:var(--bg);height:100%}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--label1);min-height:100vh;padding-bottom:var(--tab-h);-webkit-font-smoothing:antialiased}
+
+/* STATUS BAR SPACER */
+.statusbar{height:env(safe-area-inset-top, 44px);background:var(--bg)}
+
+/* NAVIGATION BAR */
+.navbar{
+  background:rgba(242,242,247,0.85);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:0.5px solid var(--sep);
+  padding:8px 20px 10px;
+  position:sticky;top:0;z-index:50;
+}
+.navbar-title{font-size:17px;font-weight:600;color:var(--label1);text-align:center}
+.navbar-sub{font-size:13px;color:var(--label3);text-align:center;margin-top:1px}
+
+/* LARGE TITLE */
+.large-title{
+  padding:16px 20px 8px;
+}
+.large-title h1{font-size:34px;font-weight:800;letter-spacing:-0.5px;color:var(--label1)}
+.large-title p{font-size:15px;color:var(--label3);margin-top:2px}
+
+/* SCROLL CONTENT */
+.scroll-content{padding:0 16px 16px}
+
+/* CARDS */
+.ios-card{background:var(--card);border-radius:var(--r-card);margin-bottom:20px;overflow:hidden}
+.ios-card-inset{background:var(--card2);border-radius:var(--r-card);margin-bottom:20px;overflow:hidden}
+
+/* GROUPED LIST STYLE */
+.list-section{margin-bottom:20px}
+.list-header{font-size:13px;font-weight:500;color:var(--label3);text-transform:uppercase;letter-spacing:0.4px;padding:0 16px 6px;margin-top:0}
+.list-row{
+  background:var(--card);
+  padding:12px 16px;
+  display:flex;align-items:center;gap:12px;
+  border-bottom:0.5px solid var(--sep);
+  position:relative;
+}
+.list-section>.ios-card>.list-row:last-child{border-bottom:none}
+.row-icon{
+  width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.row-label{font-size:17px;color:var(--label1);flex:1}
+.row-sub{font-size:13px;color:var(--label3);margin-top:1px}
+.row-value{font-size:17px;color:var(--label3)}
+.row-chevron{color:var(--label4);font-size:12px}
+
+/* INPUTS */
+.ios-input{
+  width:100%;background:transparent;border:none;outline:none;
+  font-family:'Inter',sans-serif;font-size:17px;color:var(--label1);
+  padding:12px 16px;
+}
+.ios-input::placeholder{color:var(--label3)}
+.input-row-ios{display:flex;align-items:center;border-bottom:0.5px solid var(--sep)}
+.input-row-ios:last-child{border-bottom:none}
+.input-label-ios{font-size:17px;color:var(--label1);padding:12px 16px;white-space:nowrap;min-width:140px}
+.input-right{flex:1;display:flex;align-items:center;border-left:0.5px solid var(--sep)}
+.input-right input{
+  flex:1;background:transparent;border:none;outline:none;
+  font-family:'Inter',sans-serif;font-size:17px;color:var(--label1);
+  padding:12px 12px;text-align:right;
+}
+.input-right input::placeholder{color:var(--label3);text-align:right}
+.input-unit{font-size:15px;color:var(--label3);padding-right:16px}
+
+/* STEPPER */
+.stepper{display:flex;align-items:center;gap:0;background:var(--fill2);border-radius:8px;overflow:hidden}
+.stepper button{
+  width:36px;height:32px;background:var(--fill1);border:none;cursor:pointer;
+  font-size:20px;font-weight:300;color:var(--blue);display:flex;align-items:center;justify-content:center;
+  transition:background 0.1s;user-select:none;
+}
+.stepper button:active{background:var(--sep-strong)}
+.stepper span{min-width:36px;text-align:center;font-size:17px;font-weight:600;color:var(--label1)}
+
+/* BIG SAVE BUTTON */
+.ios-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:16px;
+  border:none;border-radius:var(--r-card);cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:17px;font-weight:600;
+  transition:opacity 0.15s,transform 0.1s;
+}
+.ios-btn:active{opacity:0.75;transform:scale(0.98)}
+.btn-green{background:var(--green);color:#fff}
+.btn-outline{background:var(--fill2);color:var(--blue)}
+
+/* METRIC BIG */
+.metric-hero{
+  background:var(--card);border-radius:var(--r-lg);
+  padding:20px;margin-bottom:16px;
+  display:flex;align-items:center;gap:16px;
+}
+.metric-hero-icon{
+  width:56px;height:56px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;
+}
+.metric-hero-val{font-size:40px;font-weight:800;letter-spacing:-1px;line-height:1}
+.metric-hero-lbl{font-size:14px;color:var(--label3);margin-top:3px;font-weight:500}
+
+/* STAT PILLS */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.stat-pill{
+  background:var(--card);border-radius:var(--r-card);
+  padding:16px;
+}
+.stat-val{font-size:28px;font-weight:800;letter-spacing:-0.5px;line-height:1}
+.stat-lbl{font-size:13px;color:var(--label3);margin-top:4px;font-weight:500}
+
+/* PROGRESS BAR */
+.prog-item{margin-bottom:14px}
+.prog-header{display:flex;justify-content:space-between;margin-bottom:6px}
+.prog-name{font-size:15px;font-weight:500;color:var(--label1)}
+.prog-val{font-size:15px;font-weight:600}
+.prog-track{height:8px;background:var(--fill2);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;transition:width 0.9s cubic-bezier(0.34,1.2,0.64,1)}
+
+/* PERIOD SEGMENT */
+.segment{
+  display:flex;background:var(--fill2);border-radius:9px;padding:2px;
+  margin-bottom:16px;
+}
+.seg-btn{
+  flex:1;padding:7px 0;font-size:13px;font-weight:500;
+  border:none;background:transparent;border-radius:7px;cursor:pointer;
+  color:var(--label2);transition:background 0.2s,color 0.2s;
+  font-family:'Inter',sans-serif;
+}
+.seg-btn.active{background:var(--card);color:var(--label1);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,0.12)}
+
+/* REGISTRO ITEM */
+.reg-item{padding:12px 16px;border-bottom:0.5px solid var(--sep);display:flex;gap:12px;align-items:flex-start}
+.reg-item:last-child{border-bottom:none}
+.reg-date-badge{background:var(--green-bg);color:var(--green-dark);font-size:11px;font-weight:700;padding:4px 8px;border-radius:8px;white-space:nowrap;text-align:center}
+.reg-name{font-size:15px;font-weight:600;margin-bottom:2px}
+.reg-meta{font-size:13px;color:var(--label3);margin-bottom:6px}
+.chip-row{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px}
+.chip-blue{background:var(--blue-bg);color:var(--blue)}
+.chip-green{background:var(--green-bg);color:var(--green-dark)}
+.chip-gray{background:var(--fill2);color:var(--label2)}
+
+/* ACCION ITEM */
+.accion-item{padding:14px 16px;border-bottom:0.5px solid var(--sep);display:flex;gap:12px;align-items:flex-start}
+.accion-item:last-child{border-bottom:none}
+.accion-icon-wrap{
+  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.accion-title{font-size:15px;font-weight:600;color:var(--label1);margin-bottom:3px;line-height:1.4}
+.accion-hint{font-size:13px;color:var(--label3);line-height:1.5}
+
+/* SECTION HEADER */
+.section-hdr{
+  display:flex;align-items:center;gap:8px;
+  padding:0 4px 10px;margin-top:4px;
+}
+.section-hdr-icon{
+  width:28px;height:28px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+}
+.section-hdr-text{font-size:15px;font-weight:700;color:var(--label1)}
+
+/* DECOMP CARDS */
+.decomp-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.decomp-card{border-radius:var(--r-card);padding:16px;text-align:center}
+.decomp-num{font-size:26px;font-weight:800;letter-spacing:-0.5px;line-height:1}
+.decomp-unit{font-size:12px;font-weight:600;opacity:0.7;margin-bottom:4px}
+.decomp-lbl{font-size:12px;font-weight:500;opacity:0.8}
+
+/* ALERT BOX */
+.ios-alert{border-radius:var(--r-card);padding:14px 16px;margin-bottom:16px}
+.ios-alert-title{font-size:14px;font-weight:700;margin-bottom:3px}
+.ios-alert-body{font-size:13px;line-height:1.5}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:calc(var(--tab-h) + 16px);left:50%;transform:translateX(-50%) translateY(20px);
+  background:rgba(50,50,50,0.9);color:#fff;
+  padding:10px 20px;border-radius:20px;font-size:14px;font-weight:600;
+  opacity:0;transition:opacity 0.25s,transform 0.25s;
+  white-space:nowrap;z-index:200;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* TAB BAR */
+.tabbar{
+  position:fixed;bottom:0;left:0;right:0;height:var(--tab-h);
+  background:rgba(249,249,251,0.88);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  backdrop-filter:saturate(180%) blur(20px);
+  border-top:0.5px solid var(--sep);
+  display:flex;align-items:flex-start;
+  padding:8px 0 0;
+  z-index:100;
+}
+.tab-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+  background:none;border:none;cursor:pointer;padding:0 4px;
+  transition:opacity 0.1s;
+}
+.tab-btn:active{opacity:0.6}
+.tab-icon{font-size:22px;line-height:1}
+.tab-label{font-size:10px;font-weight:500;color:var(--label3)}
+.tab-btn.active .tab-label{color:var(--green);font-weight:600}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:40px 20px;color:var(--label3)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.empty-title{font-size:17px;font-weight:600;color:var(--label2);margin-bottom:6px}
+.empty-sub{font-size:15px}
+
+/* PANEL */
+.panel{display:none}
+.panel.active{display:block;animation:ios-in 0.3s ease}
+@keyframes ios-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div class="statusbar"></div>
+
+<!-- NAVBAR -->
+<div class="navbar" id="navbar">
+  <div class="navbar-title" id="nav-title">EcoZona</div>
+  <div class="navbar-sub" id="nav-sub">Monitor de residuos</div>
+</div>
+
+<!-- REGISTRAR -->
+<div id="panel-registro" class="panel active">
+  <div class="large-title">
+    <h1>Registrar</h1>
+    <p>Residuos de hoy en tu hogar</p>
+  </div>
+  <div class="scroll-content">
+    <div class="list-header">Tu familia</div>
+    <div class="ios-card">
+      <div class="input-row-ios">
+        <div class="input-label-ios">Familia / sector</div>
+        <div class="input-right">
+          <input type="text" id="familia" placeholder="Ej: García — Sector 2">
+        </div>
+      </div>
+      <div class="input-row-ios" style="border-bottom:none">
+        <div class="input-label-ios">Personas</div>
+        <div class="input-right" style="justify-content:flex-end;padding-right:16px">
+          <div class="stepper">
+            <button onclick="step('personas',-1)">−</button>
+            <span id="personas-val">4</span>
+            <button onclick="step('personas',1)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="list-header">Residuos generados hoy</div>
+    <div class="ios-card">
+      <div class="input-row-ios">
+        <div class="input-label-ios">🛍️ Bolsas plásticas</div>
+        <div class="input-right" style="justify-content:flex-end;padding-right:16px">
+          <div class="stepper">
+            <button onclick="step('bolsas',-1)">−</button>
+            <span id="bolsas-val">0</span>
+            <button onclick="step('bolsas',1)">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="input-row-ios">
+        <div class="input-label-ios">🍶 Botellas PET</div>
+        <div class="input-right" style="justify-content:flex-end;padding-right:16px">
+          <div class="stepper">
+            <button onclick="step('botellas',-1)">−</button>
+            <span id="botellas-val">0</span>
+            <button onclick="step('botellas',1)">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="input-row-ios" style="border-bottom:none">
+        <div class="input-label-ios">♻️ Otros (kg)</div>
+        <div class="input-right">
+          <input type="number" id="otros" placeholder="0.0" step="0.1" min="0" style="text-align:right">
+          <div class="input-unit">kg</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="ios-btn btn-green" onclick="guardar()">
+      Guardar registro de hoy
+    </button>
+  </div>
+</div>
+
+<!-- RESUMEN -->
+<div id="panel-resumen" class="panel">
+  <div class="large-title">
+    <h1>Resumen</h1>
+    <p>Consolidado acumulado</p>
+  </div>
+  <div class="scroll-content">
+    <div class="segment">
+      <button class="seg-btn active" id="seg-dia" onclick="setPeriodo('dia')">Hoy</button>
+      <button class="seg-btn" id="seg-semana" onclick="setPeriodo('semana')">Semana</button>
+      <button class="seg-btn" id="seg-total" onclick="setPeriodo('total')">Total</button>
+    </div>
+
+    <div class="metric-hero">
+      <div class="metric-hero-icon" style="background:var(--green-bg);font-size:28px">⚖️</div>
+      <div>
+        <div class="metric-hero-val" id="c-peso" style="color:var(--green-dark)">0.0</div>
+        <div class="metric-hero-lbl">kilogramos de plástico generados</div>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-pill">
+        <div class="stat-val" id="c-familias">0</div>
+        <div class="stat-lbl">Familias</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-val" id="c-personas">0</div>
+        <div class="stat-lbl">Personas</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-val" id="c-bolsas" style="color:var(--blue)">0</div>
+        <div class="stat-lbl">Bolsas</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-val" id="c-botellas" style="color:var(--green-dark)">0</div>
+        <div class="stat-lbl">Botellas PET</div>
+      </div>
+    </div>
+
+    <div class="list-header">Últimos registros</div>
+    <div class="ios-card" id="lista-registros">
+      <div class="empty" style="padding:30px 20px">
+        <div class="empty-icon">📭</div>
+        <div class="empty-title">Sin registros</div>
+        <div class="empty-sub">Ve a Registrar para agregar datos</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- IMPACTO -->
+<div id="panel-impacto" class="panel">
+  <div class="large-title">
+    <h1>Impacto</h1>
+    <p>Contaminación estimada</p>
+  </div>
+  <div class="scroll-content">
+    <div id="impacto-empty" class="ios-card">
+      <div class="empty">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-title">Sin datos aún</div>
+        <div class="empty-sub">Registra residuos primero para ver el impacto ambiental calculado</div>
+      </div>
+    </div>
+    <div id="impacto-content" style="display:none">
+      <div id="alerta-nivel"></div>
+
+      <div class="list-header">Contaminación estimada acumulada</div>
+      <div class="ios-card" style="padding:16px">
+        <div class="prog-item">
+          <div class="prog-header">
+            <span class="prog-name">💧 Agua contaminada</span>
+            <span class="prog-val" id="imp-agua-val" style="color:var(--blue)">0 L</span>
+          </div>
+          <div class="prog-track"><div class="prog-fill" id="imp-agua" style="width:0%;background:var(--blue)"></div></div>
+          <div style="font-size:12px;color:var(--label3);margin-top:4px">Una bolsa puede contaminar ~1,000 L de agua subterránea</div>
+        </div>
+        <div class="prog-item">
+          <div class="prog-header">
+            <span class="prog-name">🌱 Suelo afectado</span>
+            <span class="prog-val" id="imp-suelo-val" style="color:var(--green-dark)">0 m²</span>
+          </div>
+          <div class="prog-track"><div class="prog-fill" id="imp-suelo" style="width:0%;background:var(--green)"></div></div>
+          <div style="font-size:12px;color:var(--label3);margin-top:4px">Los microplásticos inutilizan suelo agrícola por décadas</div>
+        </div>
+        <div class="prog-item" style="margin-bottom:0">
+          <div class="prog-header">
+            <span class="prog-name">☁️ CO₂ equivalente</span>
+            <span class="prog-val" id="imp-co2-val" style="color:var(--orange)">0 g</span>
+          </div>
+          <div class="prog-track"><div class="prog-fill" id="imp-co2" style="width:0%;background:var(--orange)"></div></div>
+          <div style="font-size:12px;color:var(--label3);margin-top:4px">Emisiones por descomposición en relleno sanitario</div>
+        </div>
+      </div>
+
+      <div class="list-header">Tiempo de descomposición</div>
+      <div class="decomp-row">
+        <div class="decomp-card" style="background:var(--blue-bg)">
+          <div class="decomp-num" style="color:var(--blue)">10–20</div>
+          <div class="decomp-unit" style="color:var(--blue)">años</div>
+          <div class="decomp-lbl" style="color:var(--blue)">Bolsa plástica</div>
+        </div>
+        <div class="decomp-card" style="background:var(--green-bg)">
+          <div class="decomp-num" style="color:var(--green-dark)">400+</div>
+          <div class="decomp-unit" style="color:var(--green-dark)">años</div>
+          <div class="decomp-lbl" style="color:var(--green-dark)">Botella PET</div>
+        </div>
+      </div>
+
+      <div class="ios-card" style="padding:16px;background:var(--green-bg)">
+        <div style="font-size:13px;font-weight:700;color:var(--green-dark);margin-bottom:6px">📌 ¿Qué significa esto?</div>
+        <div id="comparacion-texto" style="font-size:14px;color:var(--green-dark);line-height:1.6"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ACCIONES -->
+<div id="panel-acciones" class="panel">
+  <div class="large-title">
+    <h1>Acciones</h1>
+    <p>Qué hacer hoy mismo</p>
+  </div>
+  <div class="scroll-content">
+    <div class="ios-alert" style="background:var(--green-bg)">
+      <div class="ios-alert-title" style="color:var(--green-dark)">Pequeños cambios, gran impacto</div>
+      <div class="ios-alert-body" style="color:var(--green-dark)">Estas acciones son gratuitas y puedes empezarlas hoy con tu familia.</div>
+    </div>
+
+    <div class="list-header">Para bolsas plásticas</div>
+    <div class="ios-card">
+      <div class="accion-item">
+        <div class="accion-icon-wrap" style="background:var(--blue-bg)">🛍️</div>
+        <div><div class="accion-title">Usa bolsas reutilizables de tela o yute</div><div class="accion-hint">Evita hasta 500 bolsas por año — lleva siempre una en tu bolso</div></div>
+      </div>
+      <div class="accion-item">
+        <div class="accion-icon-wrap" style="background:var(--blue-bg)">🔄</div>
+        <div><div class="accion-title">Reutiliza cada bolsa al menos 3 veces</div><div class="accion-hint">Para basura, almacenamiento o llevar cosas antes de desecharla</div></div>
+      </div>
+      <div class="accion-item" style="border-bottom:none">
+        <div class="accion-icon-wrap" style="background:var(--blue-bg)">📦</div>
+        <div><div class="accion-title">Lleva bolsas limpias al punto de acopio</div><div class="accion-hint">Muchas bodegas y mercados las reciben para reciclaje</div></div>
+      </div>
+    </div>
+
+    <div class="list-header">Para botellas PET</div>
+    <div class="ios-card">
+      <div class="accion-item">
+        <div class="accion-icon-wrap" style="background:var(--green-bg)">🫗</div>
+        <div><div class="accion-title">Usa bidones o termos reutilizables</div><div class="accion-hint">Ahorra ~120 botellas al mes por familia</div></div>
+      </div>
+      <div class="accion-item">
+        <div class="accion-icon-wrap" style="background:var(--green-bg)">🤏</div>
+        <div><div class="accion-title">Aplasta las botellas antes de desecharlas</div><div class="accion-hint">Reduce volumen y facilita el acopio comunitario</div></div>
+      </div>
+      <div class="accion-item" style="border-bottom:none">
+        <div class="accion-icon-wrap" style="background:var(--green-bg)">🌿</div>
+        <div><div class="accion-title">Transforma botellas en macetas o almacenadores</div><div class="accion-hint">Extiende su vida útil y reduce lo que va a la basura</div></div>
+      </div>
+    </div>
+
+    <div class="list-header">En comunidad</div>
+    <div class="ios-card">
+      <div class="accion-item">
+        <div class="accion-icon-wrap" style="background:var(--orange-bg)">🤝</div>
+        <div><div class="accion-title">Organiza un acopio comunal semanal</div><div class="accion-hint">Coordina con recicladores de base o la municipalidad</div></div>
+      </div>
+      <div class="accion-item">
+        <div class="accion-icon-wrap" style="background:var(--orange-bg)">👨‍👩‍👧</div>
+        <div><div class="accion-title">Enseña a los niños a separar plásticos</div><div class="accion-hint">Los hábitos desde niño se mantienen toda la vida</div></div>
+      </div>
+      <div class="accion-item" style="border-bottom:none">
+        <div class="accion-icon-wrap" style="background:var(--orange-bg)">📊</div>
+        <div><div class="accion-title">Comparte los datos con más familias</div><div class="accion-hint">Ver los números reales de la comunidad motiva el cambio colectivo</div></div>
+      </div>
+    </div>
+    <div style="height:8px"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- TAB BAR -->
+<div class="tabbar">
+  <button class="tab-btn active" id="tab-registro" onclick="switchTab('registro')">
+    <div class="tab-icon">📋</div>
+    <div class="tab-label">Registrar</div>
+  </button>
+  <button class="tab-btn" id="tab-resumen" onclick="switchTab('resumen')">
+    <div class="tab-icon">📊</div>
+    <div class="tab-label">Resumen</div>
+  </button>
+  <button class="tab-btn" id="tab-impacto" onclick="switchTab('impacto')">
+    <div class="tab-icon">💧</div>
+    <div class="tab-label">Impacto</div>
+  </button>
+  <button class="tab-btn" id="tab-acciones" onclick="switchTab('acciones')">
+    <div class="tab-icon">💡</div>
+    <div class="tab-label">Acciones</div>
+  </button>
+</div>
+
+<script>
+let registros = JSON.parse(localStorage.getItem('eco_registros')||'[]');
+let periodo = 'dia';
+const stepVals = {personas:4, bolsas:0, botellas:0};
+
+function step(id, delta){
+  stepVals[id] = Math.max(0, (stepVals[id]||0) + delta);
+  document.getElementById(id+'-val').textContent = stepVals[id];
+}
+
+function switchTab(t){
+  ['registro','resumen','impacto','acciones'].forEach(x=>{
+    document.getElementById('tab-'+x).classList.toggle('active', x===t);
+    document.getElementById('panel-'+x).classList.toggle('active', x===t);
+  });
+  if(t==='resumen') actualizar();
+  if(t==='impacto') actualizarImpacto();
+}
+
+function showToast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2500);
+}
+
+function guardar(){
+  const familia = document.getElementById('familia').value.trim()||'Familia sin nombre';
+  const otros = parseFloat(document.getElementById('otros').value)||0;
+  registros.push({
+    familia, personas:stepVals.personas,
+    bolsas:stepVals.bolsas, botellas:stepVals.botellas,
+    otros, ts:Date.now()
+  });
+  localStorage.setItem('eco_registros', JSON.stringify(registros));
+  stepVals.bolsas=0; stepVals.botellas=0;
+  document.getElementById('bolsas-val').textContent='0';
+  document.getElementById('botellas-val').textContent='0';
+  document.getElementById('otros').value='';
+  showToast('✅ Registro guardado');
+}
+
+function setPeriodo(p){
+  periodo=p;
+  ['dia','semana','total'].forEach(x=>document.getElementById('seg-'+x).classList.toggle('active',x===p));
+  actualizar();
+}
+
+function filtrar(){
+  const now = new Date();
+  if(periodo==='dia') return registros.filter(r=>new Date(r.ts).toDateString()===now.toDateString());
+  if(periodo==='semana') return registros.filter(r=>r.ts>=Date.now()-7*864e5);
+  return registros;
+}
+
+function actualizar(){
+  const d=filtrar();
+  const fams=new Set(d.map(r=>r.familia)).size;
+  const pers=d.reduce((a,r)=>a+r.personas,0);
+  const bols=d.reduce((a,r)=>a+r.bolsas,0);
+  const bots=d.reduce((a,r)=>a+r.botellas,0);
+  const otros=d.reduce((a,r)=>a+r.otros,0);
+  const peso=(bols*0.008+bots*0.025+otros).toFixed(2);
+  document.getElementById('c-peso').textContent=peso;
+  document.getElementById('c-familias').textContent=fams;
+  document.getElementById('c-personas').textContent=pers;
+  document.getElementById('c-bolsas').textContent=bols;
+  document.getElementById('c-botellas').textContent=bots;
+  const lista=document.getElementById('lista-registros');
+  if(!d.length){lista.innerHTML='<div class="empty" style="padding:28px 20px"><div class="empty-icon">📭</div><div class="empty-title">Sin registros</div><div class="empty-sub">Agrega el primer registro de tu familia</div></div>';return;}
+  lista.innerHTML=[...d].sort((a,b)=>b.ts-a.ts).slice(0,8).map(r=>{
+    const f=new Date(r.ts).toLocaleDateString('es-PE',{day:'numeric',month:'short'});
+    return `<div class="reg-item"><div class="reg-date-badge">${f}</div><div><div class="reg-name">${r.familia}</div><div class="reg-meta">${r.personas} personas</div><div class="chip-row"><span class="chip chip-blue">${r.bolsas} bolsas</span><span class="chip chip-green">${r.botellas} botellas</span>${r.otros>0?`<span class="chip chip-gray">${r.otros}kg</span>`:''}</div></div></div>`;
+  }).join('');
+}
+
+function actualizarImpacto(){
+  const d=filtrar();
+  const bols=d.reduce((a,r)=>a+r.bolsas,0);
+  const bots=d.reduce((a,r)=>a+r.botellas,0);
+  const otros=d.reduce((a,r)=>a+r.otros,0);
+  const total=bols+bots+(otros/0.02);
+  document.getElementById('impacto-empty').style.display=total?'none':'block';
+  document.getElementById('impacto-content').style.display=total?'block':'none';
+  if(!total) return;
+  const agua=bols*1000+bots*500;
+  const suelo=parseFloat((bols*0.05+bots*0.02+otros*0.5).toFixed(1));
+  const co2=Math.round((bols*6+bots*82.8+otros*1000)*0.001*1000);
+  document.getElementById('imp-agua-val').textContent=agua>=1000?(agua/1000).toFixed(1)+' m³':agua+' L';
+  document.getElementById('imp-suelo-val').textContent=suelo+' m²';
+  document.getElementById('imp-co2-val').textContent=co2>=1000?(co2/1000).toFixed(2)+' kg CO₂':co2+' g CO₂';
+  document.getElementById('imp-agua').style.width=Math.min(100,(agua/50000)*100)+'%';
+  document.getElementById('imp-suelo').style.width=Math.min(100,(suelo/10)*100)+'%';
+  document.getElementById('imp-co2').style.width=Math.min(100,(co2/10000)*100)+'%';
+  let color,bg,txt,icon,nivel;
+  if(total<10){color='#248A3D';bg='rgba(52,199,89,0.1)';txt='Nivel bajo — ¡Sigan así!';icon='🟢'}
+  else if(total<50){color='#B25000';bg='rgba(255,149,0,0.1)';txt='Nivel moderado — Reforzar acciones';icon='🟡'}
+  else{color='#C0392B';bg='rgba(255,59,48,0.1)';txt='Nivel alto — Acción urgente';icon='🔴'}
+  document.getElementById('alerta-nivel').innerHTML=`<div class="ios-alert" style="background:${bg}"><div class="ios-alert-title" style="color:${color}">${icon} ${txt}</div></div>`;
+  const pers=d.reduce((a,r)=>a+r.personas,0)||1;
+  document.getElementById('comparacion-texto').innerHTML=`Con <strong>${bols}</strong> bolsas y <strong>${bots}</strong> botellas, el plástico podría contaminar <strong>${Math.round(agua/1000)} m³ de agua</strong> (equivale a ${Math.round(agua/200)} bañeras). El suelo potencialmente afectado (~${suelo} m²) es como ${Math.round(suelo/1.5)} mesas de comedor. Cada persona generó <strong>${((bols+bots)/pers).toFixed(1)} unidades</strong> en este período.`;
+}
+</script>
+</body>
+</html>
